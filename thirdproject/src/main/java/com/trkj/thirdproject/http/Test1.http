@@ -1,0 +1,26 @@
+GET http://localhost:8089/thirdproject/findstudent
+Accept: application/json
+
+###
+GET http://localhost:8089/thirdproject/findAllEmp
+Accept: application/json
+
+###
+POST http://localhost:8089/student/dept
+Content-Type: application/json
+
+{
+  "deptSortnumber": 22,
+  "deptName": "财务部1",
+  "superiorsDeptId": 45
+}
+
+###
+GET http://localhost:8089/student/findalldept
+Accept: application/json
+
+###
+GET http://localhost:8089/student/findstudent
+Accept: application/json
+
+###

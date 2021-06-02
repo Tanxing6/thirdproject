@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.trkj.thirdproject.dao.ClassandstudentDao">
+  <resultMap id="BaseResultMap" type="com.trkj.thirdproject.entity.Classandstudent">
+    <id column="ClassAndStudent_Id" jdbcType="INTEGER" property="classandstudentId" />
+    <result column="Student_Id" jdbcType="INTEGER" property="studentId" />
+    <result column="Classes_Id" jdbcType="INTEGER" property="classesId" />
+  <collection property="student" ofType="com.trkj.thirdproject.entity.Student">
+    <id column="Student_Id" jdbcType="INTEGER" property="studentId" />
+    <result column="Student_Name" jdbcType="VARCHAR" property="studentName" />
+    <result column="Student_State" jdbcType="INTEGER" property="studentState" />
+    <result column="Classes_Id" jdbcType="INTEGER" property="classesId" />
+    <result column="Source_Id" jdbcType="INTEGER" property="sourceId" />
+    <result column="Register_Id" jdbcType="INTEGER" property="registerId" />
+    <result column="Sex" jdbcType="VARCHAR" property="sex" />
+    <result column="Student_Phone" jdbcType="VARCHAR" property="studentPhone" />
+    <result column="Address" jdbcType="VARCHAR" property="address" />
+    <result column="ImgAddress" jdbcType="VARCHAR" property="imgaddress" />
+    <result column="ParentName" jdbcType="VARCHAR" property="parentname" />
+    <result column="ParentPhone" jdbcType="VARCHAR" property="parentphone" />
+    <result column="Student_Number" jdbcType="VARCHAR" property="studentNumber" />
+    <result column="Entrance" jdbcType="VARCHAR" property="entrance" />
+    <result column="UpdateName" jdbcType="VARCHAR" property="updatename" />
+    <result column="UpdateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="DeleteName" jdbcType="VARCHAR" property="deletename" />
+    <result column="DeleteTime" jdbcType="TIMESTAMP" property="deletetime" />
+    <result column="TimeLiness" jdbcType="INTEGER" property="timeliness" />
+    <result column="StudyTime" jdbcType="TIMESTAMP" property="studytime" />
+  </collection>
+    <collection property="classes" ofType="com.trkj.thirdproject.entity.Classes">
+      <id column="Classes_Id" jdbcType="INTEGER" property="classesId" />
+      <result column="Classes_Name" jdbcType="VARCHAR" property="classesName" />
+      <result column="Classes_Open" jdbcType="INTEGER" property="classesOpen" />
+      <result column="Course_Id" jdbcType="INTEGER" property="courseId" />
+      <result column="ClassRoom_Id" jdbcType="INTEGER" property="classroomId" />
+      <result column="Teacher_Id" jdbcType="INTEGER" property="teacherId" />
+      <result column="Emp_Id" jdbcType="INTEGER" property="empId" />
+      <result column="DetailCourse_Id" jdbcType="INTEGER" property="detailcourseId" />
+      <result column="StartedDate" jdbcType="TIMESTAMP" property="starteddate" />
+      <result column="EndDate" jdbcType="TIMESTAMP" property="enddate" />
+      <result column="LastDate" jdbcType="TIMESTAMP" property="lastdate" />
+      <result column="AddName" jdbcType="VARCHAR" property="addname" />
+      <result column="AddTime" jdbcType="TIMESTAMP" property="addtime" />
+      <result column="UpdateName" jdbcType="VARCHAR" property="updatename" />
+      <result column="UpdateTime" jdbcType="TIMESTAMP" property="updatetime" />
+      <result column="DeleteName" jdbcType="VARCHAR" property="deletename" />
+      <result column="DeleteTime" jdbcType="TIMESTAMP" property="deletetime" />
+      <result column="TimeLiness" jdbcType="INTEGER" property="timeliness" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    cs.ClassAndStudent_Id, cs.Student_Id, cs.Classes_Id
+  </sql>
+  <sql id="Base_Column_Student">
+    s.Student_Id, s.Student_Name, s.Student_State, s.Classes_Id, s.Source_Id, s.Register_Id, s.Sex,
+    s.Student_Phone, s.Address, s.ImgAddress, s.ParentName, s.ParentPhone, s.Student_Number, s.Entrance,
+    s.UpdateName, s.UpdateTime, s.DeleteName, s.DeleteTime, s.TimeLiness, s.StudyTime
+  </sql>
+  <sql id="Base_Column_Class">
+    c.Classes_Id, c.Classes_Name, c.Classes_Open, c.Course_Id, c.ClassRoom_Id, c.Teacher_Id, c.Emp_Id,
+    c.DetailCourse_Id, c.StartedDate, c.EndDate, c.LastDate, c.AddName, c.AddTime, c.UpdateName, c.UpdateTime,
+    c.DeleteName, c.DeleteTime, c.TimeLiness
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from classandstudent
+    where ClassAndStudent_Id = #{classandstudentId,jdbcType=INTEGER}
+  </select>
+<!--  模糊查询学生姓名和电话-->
+  <select id="findAll" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List"/>,
+    <include refid="Base_Column_Class"/>,<include refid="Base_Column_Student"/>
+
+    from classandstudent cs inner join student s on cs.Student_Id=s.Student_Id
+    inner join classes c on cs.Classes_Id=c.Classes_Id
+    <where>
+      <if test="studentName!=null">
+        s.Student_Name like CONCAT(CONCAT('%',#{studentName,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="studentPhone!=null">
+        s.Student_Phone like CONCAT(CONCAT('%',#{studentPhone,jdbcType=VARCHAR},'%'))
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from classandstudent
+    where ClassAndStudent_Id = #{classandstudentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="ClassAndStudent_Id" keyProperty="classandstudentId" parameterType="com.trkj.thirdproject.entity.Classandstudent" useGeneratedKeys="true">
+    insert into classandstudent (Student_Id, Classes_Id)
+    values (#{studentId,jdbcType=INTEGER}, #{classesId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="ClassAndStudent_Id" keyProperty="classandstudentId" parameterType="com.trkj.thirdproject.entity.Classandstudent" useGeneratedKeys="true">
+    insert into classandstudent
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        Student_Id,
+      </if>
+      <if test="classesId != null">
+        Classes_Id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="classesId != null">
+        #{classesId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trkj.thirdproject.entity.Classandstudent">
+    update classandstudent
+    <set>
+      <if test="studentId != null">
+        Student_Id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="classesId != null">
+        Classes_Id = #{classesId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ClassAndStudent_Id = #{classandstudentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trkj.thirdproject.entity.Classandstudent">
+    update classandstudent
+    set Student_Id = #{studentId,jdbcType=INTEGER},
+      Classes_Id = #{classesId,jdbcType=INTEGER}
+    where ClassAndStudent_Id = #{classandstudentId,jdbcType=INTEGER}
+  </update>
+</mapper>
